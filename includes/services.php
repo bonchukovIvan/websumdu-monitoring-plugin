@@ -19,7 +19,9 @@ function wbsmd_plg_get_response_service() {
 
     $response = [];
     $response['success'] = true;
-    $response['data'] = $data;
+    $data_wrap = [];
+    array_push($data_wrap, $data);
+    $response['data'] = $data_wrap;
 
     return $response;
 }
