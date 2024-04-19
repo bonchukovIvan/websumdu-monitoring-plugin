@@ -37,6 +37,8 @@ function wbsmd_plg_settings_init() {
      */ 
     register_setting( 'wbsmd_plg', 'wbsmd_plg_slug_news' );
     register_setting( 'wbsmd_plg', 'wbsmd_plg_slug_events' );
+    register_setting( 'wbsmd_plg', 'wbsmd_plg_slug_news_eng' );
+    register_setting( 'wbsmd_plg', 'wbsmd_plg_slug_events_eng' );
     /*
      * register custom setting options
      */ 
@@ -52,11 +54,24 @@ function wbsmd_plg_settings_init() {
     add_settings_field(
         'wbsmd_plg_news_slug_field',
         'Аліас новин',
-        'wbsmd_plg_setting_section_news_field_callback',
+        'wbsmd_plg_setting_section_field_callback',
         'wbsmd_plg',
         'wbsmd_plg_setting_section',
         [
 			'label_for' => 'wbsmd_plg_slug_news'
+		]
+    );
+    /*
+     * add news eng setting field
+     */ 
+    add_settings_field(
+        'wbsmd_plg_slug_news_eng',
+        'Аліас новин[eng]',
+        'wbsmd_plg_setting_section_field_callback',
+        'wbsmd_plg',
+        'wbsmd_plg_setting_section',
+        [
+			'label_for' => 'wbsmd_plg_slug_news_eng'
 		]
     );
     /*
@@ -65,33 +80,36 @@ function wbsmd_plg_settings_init() {
     add_settings_field(
         'wbsmd_plg_events_slug_field',
         'Аліас подій',
-        'wbsmd_plg_setting_section_events_field_callback',
+        'wbsmd_plg_setting_section_field_callback',
         'wbsmd_plg',
         'wbsmd_plg_setting_section',
         [
 			'label_for' => 'wbsmd_plg_slug_events'
 		]
     );
+    /*
+     * add events eng setting field
+     */ 
+    add_settings_field(
+        'wbsmd_plg_slug_events_eng',
+        'Аліас подій[eng]',
+        'wbsmd_plg_setting_section_field_callback',
+        'wbsmd_plg',
+        'wbsmd_plg_setting_section',
+        [
+			'label_for' => 'wbsmd_plg_slug_events_eng'
+		]
+    );
+
 }
 
-function wbsmd_plg_setting_section_news_field_callback( $args ) { 
+function wbsmd_plg_setting_section_field_callback( $args ) { 
     ?>
     <input 
         type="text"
         id="<?php echo esc_attr( $args['label_for'] ); ?>"
         name="<?php echo esc_attr( $args['label_for'] );?>"
-        value="<?php echo get_option( 'wbsmd_plg_slug_news' ); ?>"
-    />
-    <?php
-}
-
-function wbsmd_plg_setting_section_events_field_callback( $args ) { 
-    ?>
-    <input 
-        type="text"
-        id="<?php echo esc_attr( $args['label_for'] ); ?>"
-        name="<?php echo esc_attr( $args['label_for'] );?>"
-        value="<?php echo get_option( 'wbsmd_plg_slug_events' ); ?>"
+        value="<?php echo esc_attr( get_option( $args['label_for'] ) ); ?>"
     />
     <?php
 }
