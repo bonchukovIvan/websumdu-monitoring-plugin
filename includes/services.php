@@ -13,7 +13,7 @@ function wbsmd_plg_get_response_service() {
     $events = wbsmd_plg_get_posts_by_slug( $events_allias );
 
     $data = [];
-    $data['setup_info'] = ['news_allias' => $news_allias, 'events_allias' => $events_allias];
+    $data['setup_info'] = ['news_alias' => $news_allias, 'events_alias' => $events_allias];
     $data['news'] = $news;
     $data['events'] = $events;
 
