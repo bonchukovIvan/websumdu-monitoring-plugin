@@ -20,12 +20,16 @@ function wbsmd_plg_get_response_service() {
     $data['setup_info'] = [
         'news_alias' => $news_allias, 
         'events_alias' => $events_allias,
+
         'eng_news_alias' => $eng_news_allias, 
-        'eng_events_alias' => $eng_events_allias
+        'eng_events_alias' => $eng_events_allias,
+        
+        'start_date' => date('Y-m-d', strtotime('-6 months'))
     ];
     $data['news'] = $news;
-    $data['events'] = $events;
     $data['eng_news'] = $eng_news;
+    
+    $data['events'] = $events;
     $data['eng_events'] = $eng_events;
 
     $response = [];
@@ -37,8 +41,16 @@ function wbsmd_plg_get_response_service() {
     return $response;
 }
 
-function wbsmd_plg_get_posts_by_slug($cat_slug) {
-    
+function wbsmd_plg_get_posts_by_slug($cat_slug) {  
+    if ( !$cat_slug )  {
+        return ["error" => "category_not_set"];
+    }
+    if ( !function_exists('category_exists') ) {
+        require_once( ABSPATH . 'wp-admin/includes/taxonomy.php' );
+    }
+    if ( !category_exists( $cat_slug ) && !post_type_exists( $cat_slug )) {
+        return ["error" => "category_not_found"];
+    }
     $date_query = array(
         array(
             'after'     => date('Y-m-d', strtotime('-6 months')),
@@ -62,7 +74,7 @@ function wbsmd_plg_get_posts_by_slug($cat_slug) {
     }
 
     if ( empty( $query->posts ) )  {
-        return [];
+        return ["error" => "posts_not_found"];
     }
 
     $posts = [];
