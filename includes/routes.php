@@ -19,5 +19,10 @@ function wbsmd_plg_register_monitoring_routes() {
         'methods'  => WP_REST_Server::READABLE,
         'permission_callback' => '__return_true'
     ) );
+    register_rest_route( 'websumdu/v1', '/monitoring', array(
+        'callback' => 'wbsmd_plg_post_controllers_monitoring',
+        'methods'  => WP_REST_Server::CREATABLE,
+        'permission_callback' => '__return_true'
+    ) );
 
 }

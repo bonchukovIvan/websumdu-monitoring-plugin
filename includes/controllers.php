@@ -7,9 +7,10 @@ if( !defined('ABSPATH') )
 
 include_once WEBSUMDU_MONITORING_PATH . 'includes/services.php';
 
-function wbsmd_plg_get_controllers_monitoring() {
+function wbsmd_plg_post_controllers_monitoring( $request) {
     try {
-        $response = wbsmd_plg_get_response_service();
+
+        $response = wbsmd_plg_post_response_service( $request );
 
         return rest_ensure_response( $response );
     }

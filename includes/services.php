@@ -12,20 +12,25 @@ if ( function_exists('is_plugin_active') ) {
     define( 'WEBSUMDU_IS_WPML', is_plugin_active('sitepress-multilingual-cms/sitepress.php') );
 }
 
-function wbsmd_plg_get_response_service() {
+function wbsmd_plg_post_response_service( $request ) {
+    
     $slug_news = get_option( 'wbsmd_plg_slug_news' );
     $slug_events = get_option( 'wbsmd_plg_slug_events' );
     $eng_slug_news = get_option( 'wbsmd_plg_slug_news_eng' );
     $eng_slug_events = get_option( 'wbsmd_plg_slug_events_eng' );
 
     $data = [];
-    
+
+    $start_date = isset($request->get_params()['custom_date']) 
+        ? date( 'Y-m-d', strtotime($request->get_params()['custom_date']) ) 
+        : date( 'Y-m-d', strtotime('first day of january this year') );
+
     $data['setup_info'] = [
         'news_alias' => $slug_news, 
         'events_alias' => $slug_events,
         'eng_news_alias' => $eng_slug_news, 
         'eng_events_alias' => $eng_slug_events,
-        'start_date' => date( 'Y-m-d', strtotime('-6 months') )
+        'start_date' => $start_date
     ];
 
     if ( WEBSUMDU_IS_WPML ) {
@@ -40,31 +45,15 @@ function wbsmd_plg_get_response_service() {
         }
     }
 
-    wbsmd_plg_add_posts_to_data(
-        $data,
-        $slug_news,
-        'news'
-    );
-    wbsmd_plg_add_posts_to_data(
-        $data,
-        $slug_events,
-        'events'
-    );
+    wbsmd_plg_add_posts_to_data( $data, $slug_news, 'news', $start_date );
+    wbsmd_plg_add_posts_to_data( $data, $slug_events, 'events', $start_date );
 
     if ( WEBSUMDU_IS_WPML ) {
         $sitepress->switch_lang( 'en' );
     }
 
-    wbsmd_plg_add_posts_to_data(
-        $data,
-        $eng_slug_news,
-        'eng_news'
-    );
-    wbsmd_plg_add_posts_to_data(
-        $data,
-        $eng_slug_events,
-        'eng_events'
-    );
+    wbsmd_plg_add_posts_to_data( $data, $eng_slug_news, 'eng_news', $start_date );
+    wbsmd_plg_add_posts_to_data( $data, $eng_slug_events, 'eng_events', $start_date );
 
     if ( WEBSUMDU_IS_WPML ) {
         $sitepress->switch_lang( $sitepress->get_current_language() );
@@ -81,7 +70,7 @@ function wbsmd_plg_get_response_service() {
     return $response;
 }
 
-function wbsmd_plg_get_posts_by_slug($cat_slug) {  
+function wbsmd_plg_get_posts_by_slug($cat_slug, $start_date) {  
     if ( !$cat_slug )  {
         return ["error" => "category_not_set"];
     }
@@ -92,7 +81,7 @@ function wbsmd_plg_get_posts_by_slug($cat_slug) {
     
     $date_query = array(
         array(
-            'after'     => date('Y-m-d', strtotime('-6 months')),
+            'after'     => $start_date,
             'before'    => date('Y-m-d', strtotime('today')),
             'inclusive' => true,
         )
@@ -129,8 +118,8 @@ function wbsmd_plg_get_posts_by_slug($cat_slug) {
     return $posts;
 }
 
-function wbsmd_plg_add_posts_to_data( &$data, $cat_slug,  $d_slug ) {
-    $posts = wbsmd_plg_get_posts_by_slug( $cat_slug );
+function wbsmd_plg_add_posts_to_data( &$data, $cat_slug,  $d_slug, $start_date ) {
+    $posts = wbsmd_plg_get_posts_by_slug( $cat_slug, $start_date );
     $data[$d_slug] = $posts;
     return true;
 }
