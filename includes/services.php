@@ -90,6 +90,7 @@ function wbsmd_plg_get_posts_by_slug($cat_slug, $start_date) {
     $args = array(
         'date_query' => $date_query,
         'category_name' => $cat_slug,
+        'posts_per_page' => -1
     );
     $query = new WP_Query( $args );
 
@@ -97,6 +98,7 @@ function wbsmd_plg_get_posts_by_slug($cat_slug, $start_date) {
         $args = array(
             'date_query' => $date_query,
             'post_type' => $cat_slug,
+            'posts_per_page' => -1
         );
         $query = new WP_Query( $args );
     }
